@@ -1,71 +1,98 @@
-[build-system]
-requires = [ "setuptools", "wheel",]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "app"
-description = "A new Python project."
+version = "0.0.0"
 readme = "README.md"
-dynamic = [ "version",]
-requires-python = ">=3.11"
-dependencies = [ "fastapi>=0.109.2", "itsdangerous>=2.1.2", "pydantic-settings>=2.2.1", "uvicorn>=0.27.1",]
+description = "Fullstack Python"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.109.2",
+  "itsdangerous>=2.1.2",
+  "modal>=0.65.47",
+  "pydantic-settings>=2.2.1",
+  "structlog>=24.4.0",
+  "uvicorn>=0.27.1",
+]
 
-[project.optional-dependencies]
-dev = [ "asgi-lifespan>=2.1.0", "black>=24.2.0", "coverage>=7.4.2", "greenlet>=3.0.3", "invoke>=2.2.0", "mypy>=1.8.0", "pre-commit>=3.6.2", "pytest-asyncio>=0.23.5", "pytest-cov>=4.1.0", "pytest-xdist>=3.5.0", "pytest>=8.0.1", "ruff>=0.2.2", "snok", "watchfiles>=0.21.0",]
+[project.license]
+file = "LICENSE"
 
-[tool.snok]
-name = "app"
-sources = [ "app", "tests",]
+[project.urls]
+Home = "https://github.com/anthonycorletti/fullstack-python-example"
 
-[tool.ruff]
-line-length = 88
-include = [ "*.py",]
-target-version = "py310"
-
-[tool.black]
-target-version = [ "py310",]
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.eggs
-  | \.git
-  | \.hg
-  | \.*_cache
-  | \.tox
-  | \.venv
-  | build
-  | dist
-  | __pycache__
-)/
-'''
+[tool.uv]
+dev-dependencies = [
+  "asgi-lifespan>=2.1.0",
+  "coverage>=7.4.2",
+  "greenlet>=3.0.3",
+  "mypy>=1.8.0",
+  "pytest-asyncio>=0.23.5",
+  "pytest-cov>=4.1.0",
+  "pytest-xdist>=3.5.0",
+  "pytest>=8.0.1",
+  "ruff>=0.2.2",
+]
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 ignore_missing_imports = true
 disallow_untyped_defs = true
-exclude = [ "dist", "build", ".venv",]
+exclude = ["dist", "build", ".venv"]
+
 [[tool.mypy.overrides]]
 module = "app._modal"
 ignore_errors = true
 
-[tool.ruff.lint]
-ignore = [ "D10", "D203", "D204", "D213", "D215", "D400", "D404", "D406", "D407", "D408", "D409", "D413", "D415",]
-select = [ "E", "F", "I",]
+[tool.ruff]
+line-length = 88
+include = ["*.py"]
+exclude = ["dist", "build", ".venv"]
+target-version = "py312"
 
-[tool.setuptools.package-data]
-app = [ "py.typed",]
+[tool.ruff.lint]
+ignore = [
+  "D10",
+  "D203",
+  "D204",
+  "D213",
+  "D215",
+  "D400",
+  "D404",
+  "D406",
+  "D407",
+  "D408",
+  "D409",
+  "D413",
+  "D415",
+]
+select = ["E", "F", "I"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.pytest.ini_options]
-addopts = [ "-n", "auto", "-o", "console_output_style=progress", "--disable-warnings", "--showlocals", "--cov=app", "--cov=tests", "--cov-report=term-missing", "--cov-report=xml", "--cov-report=html",]
+addopts = [
+  "-o",
+  "console_output_style=progress",
+  "--asyncio-mode=auto",
+  "--disable-warnings",
+  "--showlocals",
+  "--cov=app",
+  "--cov=tests",
+  "--cov-report=term-missing",
+  "--cov-report=xml",
+  "--cov-report=html",
+  "--ignore=tmp",
+]
+asyncio_default_fixture_loop_scope = "function"
 
 [tool.coverage.run]
 parallel = true
-source = [ "app", "tests",]
-omit = [ "*__init__.py", "_modal.py",]
-concurrency = [ "thread", "greenlet", "multiprocessing",]
+source = ["app", "tests"]
+omit = ["*__init__.py", "app/_modal.py"]
+concurrency = ["thread", "greenlet", "multiprocessing"]
 
 [tool.coverage.report]
-exclude_lines = [ "pragma: no cover", "raise NotImplementedError",]
+exclude_lines = ["pragma: no cover", "raise NotImplementedError"]
 
 [tool.coverage.html]
 directory = "htmlcov"
@@ -73,11 +100,11 @@ directory = "htmlcov"
 [tool.coverage.xml]
 output = "coverage.xml"
 
-[tool.ruff.lint.pydocstyle]
-convention = "google"
+[tool.setuptools.package-data]
+app = ["py.typed"]
 
 [tool.setuptools.dynamic.version]
 attr = "app.__version__"
 
 [tool.setuptools.packages.find]
-exclude = [ "tests",]
+exclude = ["tests"]

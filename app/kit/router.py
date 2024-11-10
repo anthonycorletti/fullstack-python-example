@@ -4,7 +4,7 @@ from fastapi import Request, status
 from fastapi.exceptions import HTTPException
 from pydantic import BaseModel
 
-from app.const import ResponseFormat
+from app.settings import ResponseFormat
 
 
 class RespondWith(BaseModel):

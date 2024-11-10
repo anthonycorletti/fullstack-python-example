@@ -2,22 +2,23 @@ import os
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator, Dict, Union
 
+import structlog
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from starlette.middleware.sessions import SessionMiddleware
 
 from app import __version__
-from app.config import settings
-from app.const import ResponseFormat
 from app.exceptions import exception_handlers
 from app.kit.router import respond_to
-from app.log import log
 from app.pages.index import IndexPage
 from app.pages.not_found import NotFoundPage
 from app.router import app_router
+from app.settings import ResponseFormat, settings
 
 os.environ["TZ"] = "UTC"
+
+log = structlog.get_logger()
 
 
 def configure_cors(app: FastAPI) -> None:
@@ -45,7 +46,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
 
 def create_fastapi_app() -> FastAPI:
     app = FastAPI(
-        title="faststack-python-example",
+        title="fullstack-python-example",
         version=__version__,
         lifespan=lifespan,
         exception_handlers=exception_handlers,

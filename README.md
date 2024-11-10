@@ -1,8 +1,5 @@
-# faststack-python-example
+# fullstack-python-example
 
-dreaming of a way to do full stack dev with python only.
+dreaming of a way to do full stack software development with python only.
 
-this is just a testing ground for ideas and suggestions. not for production things. sometimes you gotta have fun with software, you know?
-
----
-_This project was built with [🐍 snok](https://github.com/anthonycorletti/snok)._
+this is a place to test ideas and have some fun. i wouldn't try this in production. sometimes you gotta have fun with software, you know?

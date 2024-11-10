@@ -259,7 +259,7 @@ class Element(BaseModel):
 
 
 class Doc(BaseModel):
-    title: str = "faststack"
+    title: str = "fullstack-python"
     lang: str = "en"
     charset: str = "utf-8"
     _class: str = "scroll-smooth"

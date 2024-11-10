@@ -5,7 +5,7 @@ from app.kit.layouts import Base
 class NotFoundPage(Page):
     def __init__(self) -> None:
         self.doc = Base.model_copy()
-        self.doc.title = "faststack-python-example!"
+        self.doc.title = "fullstack-python-example!"
         self.doc.body = [
             Element(
                 tag=Tag.h1,

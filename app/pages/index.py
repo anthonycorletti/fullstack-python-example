@@ -5,12 +5,12 @@ from app.kit.layouts import Base
 class IndexPage(Page):
     def __init__(self) -> None:
         self.doc = Base.model_copy()
-        self.doc.title = "faststack-python-example!"
+        self.doc.title = "fullstack-python-example!"
         self.doc.body = [
             Element(
                 tag=Tag.h1,
                 attrs={Attr._id: "title", Attr._class: "text-4xl"},
-                innerHTML="faststack-python-example!",
+                innerHTML="fullstack-python-example!",
             ),
             Element(
                 tag=Tag.p,

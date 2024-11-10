@@ -20,21 +20,23 @@ class ItemsService:
         return data
 
     async def list_items_page(self, data: List[Item] | Item | None) -> ListItemsPage:
-        if data is None:
+        if data is None or isinstance(data, Item):
             data = await self.list_items()
+
         list_items_page = ListItemsPage()
         page_items = list_items_page.doc.body[0].children
         assert page_items is not None
-        # sometimes we'll just get a single item
-        if isinstance(data, Item):
+
+        if len(data) == 0:
             page_items.append(
                 Element(
                     tag=Tag.p,
-                    children=[f"New item: {data.name} - {data.count}"],
-                    attrs={Attr._class: "font-bold"},
+                    children=[
+                        "There are no items.",
+                    ],
                 )
             )
-            items = await self.list_items()
+        else:
             page_items.append(
                 Element(
                     tag=Tag.ul,
@@ -47,18 +49,16 @@ class ItemsService:
                                     tag=Tag.a,
                                     attrs={
                                         "href": f"/items/{item.name}",
-                                        Attr._class: (
-                                            "underline font-bold "
-                                            "hover:text-blue-500 pl-2"
-                                        ),
+                                        Attr._class: "underline font-bold"
+                                        " hover:text-blue-500 pl-2",
                                     },
                                     children=["edit"],
                                 ),
                                 Element(
                                     tag=Tag.span,
                                     attrs={
-                                        Attr._class: "underline font-bold "
-                                        "hover:text-red-500 pl-2",
+                                        Attr._class: "underline font-bold"
+                                        " hover:text-red-500 pl-2",
                                         Attr.hx_delete: f"/items/{item.name}",
                                         Attr.hx_confirm: "Are you sure?",
                                         Attr.hx_swap: "outerHTML",
@@ -69,58 +69,10 @@ class ItemsService:
                                 ),
                             ],
                         )
-                        for item in items
+                        for item in data
                     ],
                 )
             )
-        # sometimes we'll get a list of items
-        else:
-            if len(data) == 0:
-                page_items.append(
-                    Element(
-                        tag=Tag.p,
-                        children=[
-                            "There are no items.",
-                        ],
-                    )
-                )
-            else:
-                page_items.append(
-                    Element(
-                        tag=Tag.ul,
-                        children=[
-                            Element(
-                                tag=Tag.li,
-                                children=[
-                                    f"{item.name} - {item.count} - {item.description}",
-                                    Element(
-                                        tag=Tag.a,
-                                        attrs={
-                                            "href": f"/items/{item.name}",
-                                            Attr._class: "underline font-bold"
-                                            " hover:text-blue-500 pl-2",
-                                        },
-                                        children=["edit"],
-                                    ),
-                                    Element(
-                                        tag=Tag.span,
-                                        attrs={
-                                            Attr._class: "underline font-bold"
-                                            " hover:text-red-500 pl-2",
-                                            Attr.hx_delete: f"/items/{item.name}",
-                                            Attr.hx_confirm: "Are you sure?",
-                                            Attr.hx_swap: "outerHTML",
-                                            Attr.hx_target: "#listItemTarget",
-                                            Attr.hx_replace_url: "/items",
-                                        },
-                                        children=["delete"],
-                                    ),
-                                ],
-                            )
-                            for item in data
-                        ],
-                    )
-                )
         return list_items_page
 
     async def get_item(self, item_name: str) -> Item | None:

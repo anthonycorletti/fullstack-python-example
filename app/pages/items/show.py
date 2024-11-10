@@ -94,13 +94,6 @@ class ShowItemPage(Page):
                             ),
                         ],
                     ),
-                    Element(
-                        tag=Tag.br,
-                    ),
-                    Element(
-                        tag=Tag.div,
-                        attrs={Attr._id: "updateItemTarget"},
-                    ),
                 ],
             ),
         ]

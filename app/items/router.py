@@ -3,12 +3,12 @@ from typing import List, Union
 from fastapi import APIRouter, Body, Depends, HTTPException, Request
 from fastapi.responses import HTMLResponse
 
-from app.const import ResponseFormat
 from app.items.schemas import ItemCreate, ItemUpdate
 from app.items.service import ItemsService
 from app.kit.router import respond_to
 from app.models import Item
 from app.pages.items import NewItemsPage
+from app.settings import ResponseFormat
 
 router = APIRouter(tags=["items"])
 
@@ -112,7 +112,7 @@ async def update_item(
         request,
         {
             ResponseFormat.json: {"data": data},
-            ResponseFormat.html: {"data": data, "page": items_svc.show_item_page},
+            ResponseFormat.html: {"data": data, "page": items_svc.list_items_page},
         },
     )
 
