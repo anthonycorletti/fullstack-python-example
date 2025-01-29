@@ -11,6 +11,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from app import __version__
 from app.exceptions import exception_handlers
 from app.kit.router import respond_to
+from app.kit.sqlite import create_async_engine, create_async_sessionmaker
 from app.pages.index import IndexPage
 from app.pages.not_found import NotFoundPage
 from app.router import app_router
@@ -40,8 +41,11 @@ def add_session_middleware(app: FastAPI) -> None:
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator:
     log.debug("starting up")
-    yield
-    log.debug("shutting up")
+    asyncengine = create_async_engine("app")
+    asyncsessionmaker = create_async_sessionmaker(asyncengine)
+    yield {"asyncengine": asyncengine, "asyncsessionmaker": asyncsessionmaker}
+    await asyncengine.dispose()
+    log.debug("shutting down")
 
 
 def create_fastapi_app() -> FastAPI:

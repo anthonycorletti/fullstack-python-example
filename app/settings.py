@@ -38,6 +38,10 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
     API_SECRET_KEY: str = "secretkey"
 
+    # sqlite
+    SQLITE_SCHEME: str = "sqlite+aiosqlite"
+    SQLITE_PATH: str = "db.sqlite3"
+
     model_config = SettingsConfigDict(
         env_prefix="app_",
         env_file_encoding="utf-8",
@@ -45,6 +49,10 @@ class Settings(BaseSettings):
         env_file=environment_file,
         extra="allow",
     )
+
+    @property
+    def sqlite_dsn(self) -> str:
+        return f"{self.SQLITE_SCHEME}:///{self.SQLITE_PATH}"
 
     def is_environment(self, environment: Environment) -> bool:
         return self.ENV == environment

@@ -1,31 +1,62 @@
-from typing import List
+from typing import Sequence
 
-from app.database import db
-from app.items.schemas import ItemCreate, ItemUpdate
+from sqlmodel import desc, select
+
+from app.items.schemas import ItemsCreate, ItemsUpdate
 from app.kit.html import Attr, Element, Tag
-from app.models import Item
+from app.kit.sqlite import AsyncSession
+from app.models import Items
 from app.pages.items import ListItemsPage, ShowItemPage
 
 
 class ItemsService:
-    async def list_items(self) -> List[Item]:
-        return list(db.values())
+    async def list_items(self, db: AsyncSession) -> Sequence[Items]:
+        results = await db.exec(select(Items).order_by(desc(Items.updated_at)))
+        return results.all()
 
-    async def create_item(self, item_create: ItemCreate) -> Item:
-        data = Item(**item_create.model_dump())
-        if data.name in db:
-            db[data.name].count += data.count
-        else:
-            db[data.name] = data
-        return data
+    async def create_item(self, db: AsyncSession, items_create: ItemsCreate) -> Items:
+        item = Items(**items_create.model_dump())
+        db.add(item)
+        await db.commit()
+        await db.refresh(item)
+        return item
 
-    async def list_items_page(self, data: List[Item] | Item | None) -> ListItemsPage:
-        if data is None or isinstance(data, Item):
-            data = await self.list_items()
+    async def get_item(self, db: AsyncSession, item_name: str) -> Items | None:
+        item = await db.exec(select(Items).where(Items.name == item_name))
+        return item.one_or_none()
+
+    async def delete_item(self, db: AsyncSession, item_name: str) -> None:
+        item = await self.get_item(db, item_name)
+        if item:
+            await db.delete(item)
+            await db.commit()
+
+    async def update_item(
+        self, db: AsyncSession, item: Items, items_update: ItemsUpdate
+    ) -> Items:
+        for key, value in items_update.model_dump().items():
+            setattr(item, key, value)
+        db.add(item)
+        await db.commit()
+        await db.refresh(item)
+        return item
+
+    async def show_item_page(self, data: Items) -> ShowItemPage:
+        return ShowItemPage(data)
+
+    async def list_items_page(
+        self, data: Sequence[Items] | None | Items
+    ) -> ListItemsPage:
+        if data is None:
+            data = []
+
+        if data and isinstance(data, Items):
+            data = [data]
 
         list_items_page = ListItemsPage()
         page_items = list_items_page.doc.body[0].children
         assert page_items is not None
+        assert isinstance(data, list)
 
         if len(data) == 0:
             page_items.append(
@@ -74,23 +105,3 @@ class ItemsService:
                 )
             )
         return list_items_page
-
-    async def get_item(self, item_name: str) -> Item | None:
-        if item_name in db:
-            return db[item_name]
-        else:
-            return None
-
-    async def delete_item(self, item_name: str) -> None:
-        db.pop(item_name)
-
-    async def update_item(self, item: Item, item_update: ItemUpdate) -> Item:
-        if item_update.name != item.name:
-            db.pop(item.name)
-        updated_dump = item.model_dump() | item_update.model_dump()
-        updated_item = Item(**updated_dump)
-        db[updated_dump["name"]] = updated_item
-        return updated_item
-
-    async def show_item_page(self, data: Item) -> ShowItemPage:
-        return ShowItemPage(data)

@@ -1,10 +1,10 @@
 from app.kit.html import Attr, Element, InputType, Page, Tag
 from app.kit.layouts import Base
-from app.models.items import Item
+from app.models.items import Items
 
 
 class ShowItemPage(Page):
-    def __init__(self, data: Item) -> None:
+    def __init__(self, data: Items) -> None:
         self.doc = Base.model_copy()
         self.doc.title = "show item"
         self.doc.body = [

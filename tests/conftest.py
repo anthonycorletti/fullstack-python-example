@@ -1,11 +1,5 @@
-import pytest
+import os
 
+os.environ["APP_ENV"] = "test"
 
-@pytest.fixture(scope="session", autouse=True)
-def _session() -> None:
-    pass
-
-
-@pytest.fixture(scope="module", autouse=True)
-def _module() -> None:
-    pass
+from tests.fixtures import *  # noqa

@@ -1,9 +1,11 @@
-from typing import Optional
+from sqlmodel import Field
 
-from app.kit.db import RecordModel
+from app.kit.models import RecordModel
 
 
-class Item(RecordModel):
-    name: str
-    count: int = 1
-    description: Optional[str] = None
+class Items(RecordModel, table=True):
+    __tablename__ = "items"
+
+    name: str = Field(nullable=False, unique=True)
+    count: int = Field(1, nullable=False, gt=-1)
+    description: str = Field(nullable=True)

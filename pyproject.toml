@@ -5,22 +5,21 @@ readme = "README.md"
 description = "Fullstack Python"
 requires-python = ">=3.12"
 dependencies = [
+  "aiosqlite>=0.20.0",
+  "alembic>=1.14.1",
   "fastapi>=0.109.2",
   "itsdangerous>=2.1.2",
   "modal>=0.65.47",
   "pydantic-settings>=2.2.1",
+  "sqlmodel>=0.0.22",
   "structlog>=24.4.0",
   "uvicorn>=0.27.1",
 ]
+license = {file = "LICENSE"}
+urls = {Home = "https://github.com/anthonycorletti/fullstack-python-example"}
 
-[project.license]
-file = "LICENSE"
-
-[project.urls]
-Home = "https://github.com/anthonycorletti/fullstack-python-example"
-
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
   "asgi-lifespan>=2.1.0",
   "coverage>=7.4.2",
   "greenlet>=3.0.3",
@@ -30,6 +29,7 @@ dev-dependencies = [
   "pytest-xdist>=3.5.0",
   "pytest>=8.0.1",
   "ruff>=0.2.2",
+  "httpx>=0.28.1",
 ]
 
 [tool.mypy]
@@ -108,3 +108,4 @@ attr = "app.__version__"
 
 [tool.setuptools.packages.find]
 exclude = ["tests"]
+

@@ -1,7 +1,7 @@
-from app.kit.db import RecordModel
-from app.models.items import Item
+from app.kit.models import RecordModel
+from app.models.items import Items
 
 __all__ = [
     "RecordModel",
-    "Item",
+    "Items",
 ]
