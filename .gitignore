@@ -115,8 +115,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-.env.preview
-.env.production
+.env.*
 
 # Spyder project settings
 .spyderproject
